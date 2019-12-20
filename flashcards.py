@@ -1,5 +1,5 @@
-from Tkinter import *
-import tkFileDialog
+from tkinter import *
+from tkinter import filedialog
 import sys
 import os
 
@@ -48,7 +48,7 @@ def save(filename):
 def saveAsText():
 	#print "save"
 	global currentsave
-	filename = tkFileDialog.asksaveasfilename(defaultextension='.cjl', initialfile="vocab.cjl", title="Save")
+	filename = filedialog.asksaveasfilename(defaultextension='.cjl', initialfile="formulario.cjl", title="Guardar")
 	currentsave = filename
 	save(filename)
 	
@@ -85,7 +85,7 @@ def openFile(filename):
 # will recreate the state of the widgets as the file dictates
 def loadText():
 	#print "load"
-	filename = tkFileDialog.askopenfilename(defaultextension=".cjl", title="Open")
+	filename = filedialog.askopenfilename(defaultextension=".cjl", title="Abrir")
 	openFile(filename)
 	
 def addLine(event=None):
@@ -119,7 +119,7 @@ def nextWidget(event):
 	
 #sys.stdout = open(os.devnull, 'w')
 screen = Tk()
-
+screen.title("Flash Cards")
 
 # create a menu attached to the top of the window
 top = screen.winfo_toplevel()
@@ -128,12 +128,12 @@ top["menu"] = menuBar
 
 # create the drop down and add items to it
 dropMenu = Menu(menuBar, tearoff=0)
-menuBar.add_cascade(label="File", menu=dropMenu)
-dropMenu.add("command", label="save - Ctrl+s", command=saveText)
-dropMenu.add("command", label="save as", command=saveAsText)
-dropMenu.add("command", label="load", command=loadText)
-dropMenu.add("command", label="add line - Ctrl+shift+n", command=addLine)
-dropMenu.add("command", label="remove line - Ctrl+shift+d", command=removeLine)
+menuBar.add_cascade(label="Archivo", menu=dropMenu)
+dropMenu.add("command", label="Guardar - Ctrl+s", command=saveText)
+dropMenu.add("command", label="Guardar como", command=saveAsText)
+dropMenu.add("command", label="Abrir", command=loadText)
+dropMenu.add("command", label="Agregar linea - Ctrl+shift+n", command=addLine)
+dropMenu.add("command", label="Quitar linea - Ctrl+shift+d", command=removeLine)
 
 
 # create a grid of checkboxes followed by text boxes
@@ -187,7 +187,3 @@ screen.bind_all('<Control-KeyPress-N>', addLine)	# shortcut to add an extra line
 screen.bind_all('<Control-KeyPress-D>', removeLine)	# shortcut to remove the last line
 
 screen.mainloop()
-
-
-
-

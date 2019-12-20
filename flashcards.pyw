@@ -1,5 +1,5 @@
-from Tkinter import *
-import tkFileDialog
+from tkinter import *
+from tkinter import filedialog
 import sys
 import os
 
@@ -13,14 +13,12 @@ def toggleCheck():
 		if displayed[i] != checkvariables[i].get():
 			if checkvariables[i].get() == 1:
 				displayed[i] = 1
-				english_list[i] = str(word_list[i].get(1.0, 1.29))
-				english_list[i].strip('\n\t ')
+				english_list[i] = str(word_list[i].get(1.0, END))
 				word_list[i].delete(1.0, END)
 				word_list[i].insert(END, japanese_list[i])
 			else:
 				displayed[i] = 0
-				japanese_list[i] = str(word_list[i].get(1.0, 1.29))
-				japanese_list[i].strip('\n\t ')
+				japanese_list[i] = str(word_list[i].get(1.0, END))
 				word_list[i].delete(1.0, END)
 				word_list[i].insert(END, english_list[i])
 
@@ -30,11 +28,9 @@ def save(filename):
 	# make sure the word lists are up to date
 	for i in range(len(checkvariables)):
 		if displayed[i] == 0:
-			english_list[i] = str(word_list[i].get(1.0, 1.29))
-			english_list[i].strip('\n\t ')
+			english_list[i] = str(word_list[i].get(1.0, END))
 		else:
-			japanese_list[i] = str(word_list[i].get(1.0, 1.29))
-			japanese_list[i].strip('\n\t ')
+			japanese_list[i] = str(word_list[i].get(1.0, END))
 	# save the data into a file
 	if filename != '':
 		data = str(rownumber) + "\n"
@@ -52,7 +48,7 @@ def save(filename):
 def saveAsText():
 	#print "save"
 	global currentsave
-	filename = tkFileDialog.asksaveasfilename(defaultextension='.cjl', initialfile="vocab.cjl", title="Save")
+	filename = filedialog.asksaveasfilename(defaultextension='.cjl', initialfile="formulario.cjl", title="Guardar")
 	currentsave = filename
 	save(filename)
 	
@@ -65,17 +61,13 @@ def saveText(event=None):
 	
 # will open and parse a given file
 def openFile(filename):
-	global currentsave, rownumber
+	global currentsave
 	currentsave = filename
 	file = open(filename)
 	for line in file:
 		if line.isspace():
 			continue
 		if line.find(':') == -1:
-			continue
-		if line[0] == '!':
-			line.strip('!')
-			rownumber = int(line)
 			continue
 		part = line.partition(': ')
 		part2 = part[2].partition(', ')
@@ -93,7 +85,7 @@ def openFile(filename):
 # will recreate the state of the widgets as the file dictates
 def loadText():
 	#print "load"
-	filename = tkFileDialog.askopenfilename(defaultextension=".cjl", title="Open")
+	filename = filedialog.askopenfilename(defaultextension=".cjl", title="Abrir")
 	openFile(filename)
 	
 def addLine(event=None):
@@ -103,7 +95,7 @@ def addLine(event=None):
 	displayed.append(0)
 	y = Checkbutton(screen, text = '', variable = checkvariables[rownumber], command = toggleCheck)
 	check_list.append(y)
-	b = Text(screen, height = 1, width = 30)		# add a textbox where the user can write their goal
+	b = Text(screen, height = 2, width = 30, wrap = WORD)		# add a textbox where the user can write their goal
 	word_list.append(b)
 	english_list.append("")
 	japanese_list.append("")
@@ -127,7 +119,7 @@ def nextWidget(event):
 	
 #sys.stdout = open(os.devnull, 'w')
 screen = Tk()
-
+screen.title("Flash Cards")
 
 # create a menu attached to the top of the window
 top = screen.winfo_toplevel()
@@ -136,12 +128,12 @@ top["menu"] = menuBar
 
 # create the drop down and add items to it
 dropMenu = Menu(menuBar, tearoff=0)
-menuBar.add_cascade(label="File", menu=dropMenu)
-dropMenu.add("command", label="save - Ctrl+s", command=saveText)
-dropMenu.add("command", label="save as", command=saveAsText)
-dropMenu.add("command", label="load", command=loadText)
-dropMenu.add("command", label="add line - Ctrl+shift+n", command=addLine)
-dropMenu.add("command", label="remove line - Ctrl+shift+d", command=removeLine)
+menuBar.add_cascade(label="Archivo", menu=dropMenu)
+dropMenu.add("command", label="Guardar - Ctrl+s", command=saveText)
+dropMenu.add("command", label="Guardar como", command=saveAsText)
+dropMenu.add("command", label="Abrir", command=loadText)
+dropMenu.add("command", label="Agregar linea - Ctrl+shift+n", command=addLine)
+dropMenu.add("command", label="Quitar linea - Ctrl+shift+d", command=removeLine)
 
 
 # create a grid of checkboxes followed by text boxes
@@ -172,7 +164,7 @@ for i in range(rownumber):
 	displayed.append(0)
 	y = Checkbutton(screen, text = '', variable = checkvariables[i], command = toggleCheck)
 	check_list.append(y)
-	b = Text(screen, height = 1, width = 30)		# add a textbox where the user can write the words
+	b = Text(screen, height = 2, width = 30, wrap = WORD)		# add a textbox where the user can write the words
 	word_list.append(b)
 	english_list.append("")
 	japanese_list.append("")
@@ -195,7 +187,3 @@ screen.bind_all('<Control-KeyPress-N>', addLine)	# shortcut to add an extra line
 screen.bind_all('<Control-KeyPress-D>', removeLine)	# shortcut to remove the last line
 
 screen.mainloop()
-
-
-
-
